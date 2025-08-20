@@ -1,9 +1,10 @@
 import "./App.css";
+import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithPopup,
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
@@ -19,42 +20,64 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig); //initialize firebase
-const provider = new GoogleAuthProvider(); //create instance of google provider object
 const auth = getAuth();
-const user = auth.currentUser;
+const provider = new GoogleAuthProvider(); //create instance of google provider object
 
-//google sign in
-function signIn() {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-      console.log(user);
-    })
-    .catch((error) => {
+function SignInPage() {
+  //implement gooogle sign in functionality
+  function signIn() {
+    signInWithPopup(auth, provider).catch((error) => {
       const errorMessage = error.message;
       console.log(errorMessage);
     });
-}
-
-function signOutUser() {
-  signOut(auth)
-    .then(() => {
-      console.log("User signed out.");
-    })
-    .catch((error) => {
-      console.log(error.message);
-    });
-}
-
-export default function App() {
+  }
   return (
-    <div className="App">
-      <h1 className="App-header">Alan Chat</h1>
-      <button onClick={signIn}>Sign In</button>
-      <button onClick={signOutUser}>Sign Out</button>
+    <div className="Sign-In-Page">
+      <h1>Welcome to Alan Chat!</h1>
+      <button onClick={signIn}>SIGN IN WITH GOOGLE</button>
     </div>
   );
-  //return sign in page component if user not signed in
-  //return chat page component if user signed in
-  //return user ? <signIn /> : <chat />
+}
+
+//chat component consists of chat messages and input field for user to send messages
+function Chat({ updateState }) {
+  const currentUser = auth.currentUser; //get current user
+  return (
+    <div>
+      <h1>Start Chatting!</h1>
+      <SignOutButton />
+      <p>{currentUser.photoURL}</p>
+    </div>
+  );
+}
+
+//component for the sign out button
+function SignOutButton() {
+  function signOutUser() {
+    signOut(auth).catch((error) => {
+      console.log(error.message);
+    });
+  }
+  return <button onClick={signOutUser}>SIGN OUT</button>;
+}
+
+//Parent component
+export default function App() {
+  const [user, setUser] = useState(null); //state variable that keeps track of whether user is signed in or not
+
+  //use useEffect and onAuthStateChanged to keep track of whether user is signed in or not
+  useEffect(() => {
+    //onAuthStateChanged returns unsubscribe function
+    const unsubscribeFunction = onAuthStateChanged(auth, (user) => {
+      setUser(user); //update state using the observer on auth object
+    });
+
+    //for cleanup after App component unmounts, unsubscribe from the listener/observer
+    return () => {
+      unsubscribeFunction();
+    };
+  }, []); //empty dependency array means this code is run only once on initial render
+
+  //if user logged in, show chat room. Otherwise, show sign in page
+  return user ? <Chat updateState /> : <SignInPage onSignIn />;
 }
