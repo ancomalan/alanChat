@@ -40,10 +40,10 @@ function SignInPage() {
 }
 
 //chat component consists of chat messages and input field for user to send messages
-function Chat({ updateState }) {
+function Chat() {
   const currentUser = auth.currentUser; //get current user
   return (
-    <div>
+    <div className="Chat-Page">
       <h1>Start Chatting!</h1>
       <SignOutButton />
       <p>{currentUser.photoURL}</p>
@@ -79,5 +79,5 @@ export default function App() {
   }, []); //empty dependency array means this code is run only once on initial render
 
   //if user logged in, show chat room. Otherwise, show sign in page
-  return user ? <Chat updateState /> : <SignInPage onSignIn />;
+  return user ? <Chat /> : <SignInPage />;
 }

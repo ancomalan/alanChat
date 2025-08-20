@@ -1,13 +1,10 @@
 .Sign-In-Page {
   text-align: center;
 }
-.App-header {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  color: rgb(7, 6, 6);
+.Chat-Page{
+  text-align: center
 }
+
 
 /* .App-logo {
   height: 40vmin;
