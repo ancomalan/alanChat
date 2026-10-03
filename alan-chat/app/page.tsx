@@ -18,6 +18,6 @@ export default function Home() {
 
 
   return (
-    user ? <Chatroom /> : <SignIn />
+    user ? <Chatroom user={user} /> : <SignIn />
   );
 }

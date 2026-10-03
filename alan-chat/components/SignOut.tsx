@@ -8,7 +8,8 @@ async function signOutUser() {
 }
 
 export default function SignOut() {
-    return (
+    // only logout if user signed-in
+    return auth.currentUser && (
         <button onClick={signOutUser}>Sign-out</button>
     )
 }
