@@ -4,6 +4,7 @@ import Chatroom from '../components/Chatroom'
 import { auth } from '../lib/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { useState, useEffect } from 'react'
+import { unstable_cache } from 'next/cache'
 
 export default function Home() {
   // if user signed-in, show chat room. Else, show Sign-In page
@@ -11,9 +12,10 @@ export default function Home() {
 
   // create listener once using useEffect to prevent infinite loop
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user)
     })
+    return () => unsubscribe()
   }, [])
 
 
