@@ -12,7 +12,7 @@ import {
     QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface ChatroomProps {
     user: User;
@@ -21,6 +21,8 @@ interface ChatroomProps {
 export default function Chatroom({ user }: ChatroomProps) {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<QueryDocumentSnapshot[]>([]);
+    const scrollBarRef = useRef<HTMLLIElement | null>(null);
+
     // function for adding message (document) to collection in database
     async function addMessage() {
         try {
@@ -47,6 +49,12 @@ export default function Chatroom({ user }: ChatroomProps) {
         });
         return () => unsubscribe(); // turn off listener when component unmounts
     }, []);
+
+    // trigger scroll everytime messages get updated
+    useEffect(() => {
+        scrollBarRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages])
+
 
     return (
         <>
@@ -87,11 +95,16 @@ export default function Chatroom({ user }: ChatroomProps) {
                         {messages.map((doc) => (
                             <ChatMessage key={doc.id} messageDoc={doc} />
                         ))}
+                        {/* for scrolling to newest message */}
+                        <li ref={scrollBarRef} className="list-none" />
                     </ul>
                     <form
                         className="shrink-0"
                         onSubmit={(e) => {
                             e.preventDefault();
+                            if (!input.trim()) {
+                                return;
+                            }
                             addMessage();
                         }}
                     >
