@@ -22,7 +22,13 @@ export default function Chatroom({ user }: ChatroomProps) {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<QueryDocumentSnapshot[]>([]);
     const scrollBarRef = useRef<HTMLLIElement | null>(null);
-    const numMembers = new Set(messages.map((snapshot) => snapshot.get("uid"))).size; // set always has unique values 
+
+    // stores non-duplicate uid (key) with corresponding QueryDocumentSnapshot (value) 
+    const memberSnapshotMap = new Map<string, QueryDocumentSnapshot>();
+    // populate map (use .forEach() instead of .map() since we are not returning JSX)
+    messages.forEach((docSnapshot) => memberSnapshotMap.set(docSnapshot.get("uid"), docSnapshot))
+    // array of QueryDocumentSnapshots (values) containing metadata of active members
+    const memberDocumentArray = Array.from(memberSnapshotMap.values())
 
     // function for adding message (document) to collection in database
     async function addMessage() {
@@ -59,9 +65,9 @@ export default function Chatroom({ user }: ChatroomProps) {
 
     return (
         <>
-            {/*container that holds chat room section and sidebar section */}
+            {/*container that holds chat room section (middle) and sidebar sections */}
             <main className="flex h-screen">
-                {/* Sidebar w/ signout button and socials*/}
+                {/* Left Sidebar w/ signout button and socials*/}
                 <section className="bg-[#2c2d32] w-64 flex flex-col justify-between items-center">
                     <div className=" p-4 ">
                         <h1 className="text-3xl font-semibold">alanChat</h1>
@@ -89,7 +95,7 @@ export default function Chatroom({ user }: ChatroomProps) {
                 {/* chat room  */}
                 <section className="bg-background flex flex-col flex-1 ">
                     <h1 className="text-center text-lg shrink-0">Welcome! Please be respectful.</h1>
-                    <h3 className="text-center text-xs shrink-0">{numMembers} Members | {messages.length} messages </h3>
+                    <h3 className="text-center text-xs shrink-0">{messages.length} messages </h3>
                     <ul className="p-4 overflow-y-auto flex-1">
                         {messages.map((doc) => (
                             <ChatMessage key={doc.id} messageDoc={doc} />
@@ -115,6 +121,24 @@ export default function Chatroom({ user }: ChatroomProps) {
                             onChange={(e) => setInput(e.target.value)}
                         />
                     </form>
+                </section>
+
+                {/* Right Sidebar displaying members*/}
+                <section className="bg-[#323339] w-64 flex flex-col border border-[#3e3f45] gap-3 p-4 shrink-0">
+                    <h1 className="text-[#98999f] ">Members-{memberSnapshotMap.size}</h1>
+                    {/* display profile pic and display name for each active member */}
+                    <ul className="overflow-y-auto space-y-3">
+                        {memberDocumentArray.map((docSnapshot) => (
+                            <li key={docSnapshot.get("uid")} className="flex text-[#98999f] gap-3 items-center">
+                                <img
+                                    className="rounded-full h-8 w-8"
+                                    src={docSnapshot.get("photoUrl")}
+                                    referrerPolicy="no-referrer"
+                                />
+                                <p>{docSnapshot.get("name")}</p>
+                            </li>
+                        ))}
+                    </ul>
                 </section>
             </main >
         </>
