@@ -22,6 +22,7 @@ export default function Chatroom({ user }: ChatroomProps) {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<QueryDocumentSnapshot[]>([]);
     const scrollBarRef = useRef<HTMLLIElement | null>(null);
+    const numMembers = new Set(messages.map((snapshot) => snapshot.get("uid"))).size; // set always has unique values 
 
     // function for adding message (document) to collection in database
     async function addMessage() {
@@ -67,15 +68,13 @@ export default function Chatroom({ user }: ChatroomProps) {
                         <img
                             className="rounded-full"
                             src="https://lh3.googleusercontent.com/a/ACg8ocLSe0ioMYQrWXCE7ECqii5nD3WKS1sZzEq6gfJ6UZYHYSR9GSB-=s96-c"
-                        ></img>
+                        />
                         <div className="flex gap-4">
-                            <a href="https://github.com/ancomalan" target="_blank" className="hover:opacity-70  ">
+                            <a href="https://github.com/ancomalan" target="_blank" className="hover:opacity-70" rel="noopener noreferrer">
                                 <img src="/github-logo.png" className="w-10 h-10" />
                             </a>
                             <a
-                                className="hover:opacity-70 "
-                                href="https://www.linkedin.com/in/alan-vo-16b00231b/"
-                                target="_blank"
+                                className="hover:opacity-70 " href="https://www.linkedin.com/in/alan-vo-16b00231b/" target="_blank" rel="noopener noreferrer"
                             >
                                 <img src="/LI-In-Bug.png" className="w-10 h-10" />
                             </a>
@@ -89,8 +88,8 @@ export default function Chatroom({ user }: ChatroomProps) {
 
                 {/* chat room  */}
                 <section className="bg-background flex flex-col flex-1 ">
-                    <h1 className="text-center shrink-0">Welcome! Please be respectful.</h1>
-                    <h3 className="text-center shrink-0">1 Members | 10 messages </h3>
+                    <h1 className="text-center text-lg shrink-0">Welcome! Please be respectful.</h1>
+                    <h3 className="text-center text-xs shrink-0">{numMembers} Members | {messages.length} messages </h3>
                     <ul className="p-4 overflow-y-auto flex-1">
                         {messages.map((doc) => (
                             <ChatMessage key={doc.id} messageDoc={doc} />
@@ -117,7 +116,7 @@ export default function Chatroom({ user }: ChatroomProps) {
                         />
                     </form>
                 </section>
-            </main>
+            </main >
         </>
     );
 }
