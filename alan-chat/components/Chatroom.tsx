@@ -50,30 +50,61 @@ export default function Chatroom({ user }: ChatroomProps) {
 
     return (
         <>
-            <section className="bg-background">
-                <h1 className="text-center">Welcome to alanChat!</h1>
-                <ul className="">
-                    {messages.map((doc) => (
-                        <ChatMessage key={doc.id} messageDoc={doc} />
-                    ))}
-                </ul>
-                <form
-                    className="text-center"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        addMessage();
-                    }}
-                >
-                    <input
-                        className="bg-[#393a41] w-full p-4 rounded-lg outline-none"
-                        placeholder="Say something"
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                </form>
-            </section>
-            <SignOut />
+            {/*container that holds chat room section and sidebar section */}
+            <main className="flex h-screen">
+                {/* Sidebar w/ signout button and socials*/}
+                <section className="bg-[#2c2d32] w-64 flex flex-col justify-between items-center">
+                    <div className=" p-4 ">
+                        <h1 className="text-3xl font-semibold">alanChat</h1>
+                        <img
+                            className="rounded-full"
+                            src="https://lh3.googleusercontent.com/a/ACg8ocLSe0ioMYQrWXCE7ECqii5nD3WKS1sZzEq6gfJ6UZYHYSR9GSB-=s96-c"
+                        ></img>
+                        <div className="flex gap-4">
+                            <a href="https://github.com/ancomalan" target="_blank" className="hover:opacity-70  ">
+                                <img src="/github-logo.png" className="w-10 h-10" />
+                            </a>
+                            <a
+                                className="hover:opacity-70 "
+                                href="https://www.linkedin.com/in/alan-vo-16b00231b/"
+                                target="_blank"
+                            >
+                                <img src="/LI-In-Bug.png" className="w-10 h-10" />
+                            </a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <SignOut />
+                    </div>
+                </section>
+
+                {/* chat room  */}
+                <section className="bg-background flex-1 ">
+                    <h1 className="text-center">Welcome! Please be respectful.</h1>
+
+                    <ul className="p-4">
+                        {messages.map((doc) => (
+                            <ChatMessage key={doc.id} messageDoc={doc} />
+                        ))}
+                    </ul>
+                    <form
+                        className="text-center"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            addMessage();
+                        }}
+                    >
+                        <input
+                            className="bg-[#393a41] w-full p-4 rounded-lg outline-none"
+                            placeholder="Say something"
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        />
+                    </form>
+                </section>
+            </main>
         </>
     );
 }
