@@ -80,16 +80,16 @@ export default function Chatroom({ user }: ChatroomProps) {
                 </section>
 
                 {/* chat room  */}
-                <section className="bg-background flex-1 ">
-                    <h1 className="text-center">Welcome! Please be respectful.</h1>
-
-                    <ul className="p-4">
+                <section className="bg-background flex flex-col flex-1 ">
+                    <h1 className="text-center shrink-0">Welcome! Please be respectful.</h1>
+                    <h3 className="text-center shrink-0">1 Members | 10 messages </h3>
+                    <ul className="p-4 overflow-y-auto flex-1">
                         {messages.map((doc) => (
                             <ChatMessage key={doc.id} messageDoc={doc} />
                         ))}
                     </ul>
                     <form
-                        className="text-center"
+                        className="shrink-0"
                         onSubmit={(e) => {
                             e.preventDefault();
                             addMessage();
