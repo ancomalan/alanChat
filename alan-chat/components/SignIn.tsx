@@ -9,7 +9,7 @@ async function signInUser() {
 export default function SignIn() {
     return (
         <>
-            <h1>Please Sign-in to access alanChat!</h1>
+            <h1 className='text-center'>Please Sign-in to access alanChat!</h1>
             <button onClick={signInUser}>Sign-in</button>
         </>
 
