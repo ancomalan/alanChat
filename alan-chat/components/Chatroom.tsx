@@ -73,9 +73,9 @@ export default function Chatroom({ user }: ChatroomProps) {
             {/*container that holds chat room section (middle) and sidebar sections */}
             <main className="flex h-screen">
                 {/* Left Sidebar w/ signout button and socials*/}
-                <section className="bg-[#2c2d32] w-64 flex flex-col justify-between items-center">
-                    <div className=" p-4 ">
-                        <h1 className="text-3xl font-semibold">alanChat</h1>
+                <section className="bg-[#2c2d32] w-64 flex flex-col items-center justify-between">
+                    <h1 className="text-5xl font-extrabold p-3 m-5 bg-[#5865f2] rounded-full">alanChat</h1>
+                    <div className="flex flex-col gap-1">
                         <img
                             className="rounded-full"
                             src="https://lh3.googleusercontent.com/a/ACg8ocLSe0ioMYQrWXCE7ECqii5nD3WKS1sZzEq6gfJ6UZYHYSR9GSB-=s96-c"
@@ -91,7 +91,6 @@ export default function Chatroom({ user }: ChatroomProps) {
                             </a>
                         </div>
                     </div>
-
                     <div>
                         <SignOut />
                     </div>
@@ -99,7 +98,7 @@ export default function Chatroom({ user }: ChatroomProps) {
 
                 {/* chat room  */}
                 <section className="bg-background flex flex-col flex-1 ">
-                    <h1 className="text-center text-lg shrink-0">Welcome! Please be respectful.</h1>
+                    <h1 className="text-center text-lg shrink-0">Welcome!</h1>
                     <h3 className="text-center text-xs shrink-0">{messages.length} messages </h3>
                     <ul className="p-4 overflow-y-auto flex-1 scrollbar-track-[#323339] scrollbar-thumb-[#7d7e87]">
                         {messages.map((doc) => (

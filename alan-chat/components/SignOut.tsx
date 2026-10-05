@@ -9,6 +9,6 @@ async function signOutUser() {
 
 export default function SignOut() {
     return auth.currentUser && (
-        <button className="hover:opacity-70 p-1 font-bold bg-[#ec4444] rounded-lg" onClick={signOutUser}>Sign-out</button>
+        <button className="m-5 hover:opacity-70 p-1 font-bold bg-[#ec4444] rounded-lg" onClick={signOutUser}>Sign-out</button>
     )
 }
