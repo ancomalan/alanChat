@@ -21,14 +21,8 @@ interface ChatroomProps {
 export default function Chatroom({ user }: ChatroomProps) {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<QueryDocumentSnapshot[]>([]);
+    const [userDocs, setUserDocs] = useState<QueryDocumentSnapshot[]>([]);
     const scrollBarRef = useRef<HTMLLIElement | null>(null);
-
-    // stores non-duplicate uid (key) with corresponding QueryDocumentSnapshot (value) 
-    const memberSnapshotMap = new Map<string, QueryDocumentSnapshot>();
-    // populate map (use .forEach() instead of .map() since we are not returning JSX)
-    messages.forEach((docSnapshot) => memberSnapshotMap.set(docSnapshot.get("uid"), docSnapshot))
-    // array of QueryDocumentSnapshots (values) containing metadata of active members
-    const memberDocumentArray = Array.from(memberSnapshotMap.values())
 
     // function for adding message (document) to collection in database
     async function addMessage() {
@@ -47,12 +41,23 @@ export default function Chatroom({ user }: ChatroomProps) {
         }
     }
 
-    // start listener once after initial render
+    // start listener once after initial render to get messages
     useEffect(() => {
         const q = query(collection(db, "messages"), orderBy("createdAt"));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const messageDocs = querySnapshot.docs; // this is array of all documents in Messages collection
+            const messageDocs = querySnapshot.docs; // this is array of all documents in messages collection
             setMessages(messageDocs);
+        });
+        return () => unsubscribe(); // turn off listener when component unmounts
+    }, []);
+
+    // start another listener for users collection 
+    useEffect(() => {
+        const q = query(collection(db, "users"), orderBy("displayName"));
+        // onSnapshot reruns after any changes
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const userDocs = querySnapshot.docs; // this is array of all documents in users collection
+            setUserDocs(userDocs);
         });
         return () => unsubscribe(); // turn off listener when component unmounts
     }, []);
@@ -123,19 +128,19 @@ export default function Chatroom({ user }: ChatroomProps) {
                     </form>
                 </section>
 
-                {/* Right Sidebar displaying members*/}
+                {/* Right Sidebar displaying all members stored in db*/}
                 <section className="bg-[#323339] w-64 flex flex-col border border-[#3e3f45] gap-3 p-4 shrink-0">
-                    <h1 className="text-[#98999f] ">Members-{memberSnapshotMap.size}</h1>
+                    <h1 className="text-[#98999f] ">Members-{userDocs.length}</h1>
                     {/* display profile pic and display name for each active member */}
                     <ul className="overflow-y-auto space-y-3">
-                        {memberDocumentArray.map((docSnapshot) => (
+                        {userDocs.map((docSnapshot) => (
                             <li key={docSnapshot.get("uid")} className="flex text-[#98999f] gap-3 items-center">
                                 <img
                                     className="rounded-full h-8 w-8"
                                     src={docSnapshot.get("photoUrl")}
                                     referrerPolicy="no-referrer"
                                 />
-                                <p>{docSnapshot.get("name")}</p>
+                                <p>{docSnapshot.get("displayName")}</p>
                             </li>
                         ))}
                     </ul>
