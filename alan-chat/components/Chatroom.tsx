@@ -101,7 +101,7 @@ export default function Chatroom({ user }: ChatroomProps) {
                 <section className="bg-background flex flex-col flex-1 ">
                     <h1 className="text-center text-lg shrink-0">Welcome! Please be respectful.</h1>
                     <h3 className="text-center text-xs shrink-0">{messages.length} messages </h3>
-                    <ul className="p-4 overflow-y-auto flex-1">
+                    <ul className="p-4 overflow-y-auto flex-1 scrollbar-track-[#323339] scrollbar-thumb-[#7d7e87]">
                         {messages.map((doc) => (
                             <ChatMessage key={doc.id} messageDoc={doc} />
                         ))}
