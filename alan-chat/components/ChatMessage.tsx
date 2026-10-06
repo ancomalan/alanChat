@@ -6,8 +6,9 @@ interface ChatMessageProps {
 }
 
 export default function ChatMessage({ messageDoc }: ChatMessageProps) {
+    // time stamp may be null after submiting a new message. Thus, needs to be accounted for.
     const timestamp: Timestamp = messageDoc.get("createdAt")
-    const date = timestamp.toDate()
+    const date = timestamp ? timestamp.toDate() : new Date()
     const messageDate = date.toLocaleString("en", { dateStyle: "short", timeStyle: "short" })
 
     return (<>
